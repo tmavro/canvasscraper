@@ -16,3 +16,5 @@ For å finne cookie:
   - Velg "Storage", velg riktig nettside (https://354-1.kaltura.nordu.net/) og kopier verdien til "kms_ctamuls". 
 <img src="cookies.jpg" width="600"></img>
 - I andre nettlesere: Google it :-P 
+
+Skriv verdiene inn i kalturascraper.py i de korresponderende variablene, "cookie" og "galleryID". 
