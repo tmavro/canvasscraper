@@ -48,7 +48,7 @@ else:
     for i in range(len(names)):
         print('[' + str(i) + ']: ' + names[i] + '\n' + m3u8[i] + '\n')
 
-if platform.system() == 'Linux' and which('youtube-dl') != None:
+if platform.system() == 'Linux' or platform.system() == 'Darwin' and which('youtube-dl') != None: #Ikke testet på MacOS, men...
     spm = input('Vil du begynne nedlasting av hele listen, eller kun en video? y/[0 - ' + str(len(m3u8)-1) + ']/N \n')
     if spm == 'y' or spm == 'Y':
         for i in range(len(m3u8)):
