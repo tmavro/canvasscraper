@@ -38,9 +38,10 @@ urls = list(dict.fromkeys(urls)) #Fjerner duplikat fra listen
 urls = [ re.findall('0_[\d\w]+', id)[0] for id in urls ] #Skiller ut url-enes id-er
 m3u8 = [ 'https://dchsou11xk84p.cloudfront.net/p/354/playManifest/entryId/'
             + url + '/format/applehttp/a.m3u8' for url in urls] #Ressurslokasjoner
+
 #Utsktrift av videoer (forhåpentligvis)
 if not names or not m3u8:
-    print('Noe gikk galt! Ingen videoer funnet. Feil URL til galleri?')
+    print('Noe gikk galt! Ingen videoer funnet. Feil URL til galleri, eller tomt galleri?')
     exit()
 else:
     print('Funnet videoer!')
