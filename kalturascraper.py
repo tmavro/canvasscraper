@@ -1,9 +1,12 @@
+#!/usr/bin/env python
+# coding: utf-8
+
 import requests
+from bs4 import BeautifulSoup
 import re
 import platform
-import subprocess
-from bs4 import BeautifulSoup
 from shutil import which
+import subprocess
 
 # Oppgi session cookie, "kms_ctamuls":
 cookie = 'deim3choothoh2ooRo5ohjie8e'
