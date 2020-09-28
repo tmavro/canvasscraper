@@ -41,7 +41,7 @@ m3u8 = [ 'https://dchsou11xk84p.cloudfront.net/p/354/playManifest/entryId/'
 
 #Utsktrift av videoer (forhåpentligvis)
 if not names or not m3u8:
-    print('Noe gikk galt! Ingen videoer funnet. Feil URL til galleri, eller tomt galleri?')
+    print('Noe gikk galt! Ingen videoer funnet. Feil ID til galleri, eller tomt galleri?')
     exit()
 else:
     print('Funnet videoer!')
