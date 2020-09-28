@@ -8,7 +8,7 @@ from shutil import which
 # Oppgi session cookie, "kms_ctamuls":
 cookie = 'deim3choothoh2ooRo5ohjie8e'
 # Oppgi URL til emnets ID
-galleryID = '12345'0
+galleryID = '12345'
 
 #Setter opp for innlogging
 session = requests.Session()
