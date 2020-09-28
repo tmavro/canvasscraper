@@ -12,7 +12,7 @@ galleryID = '12345'
 
 #Setter opp for innlogging
 session = requests.Session()
-session.headers.update({'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:80.0) Gecko/20100101 Firefox/80.0'}) #Ingel blokkering, men kanskje en ekstra sikkerhet?
+session.headers.update({'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:80.0) Gecko/20100101 Firefox/80.0'}) #Ingen blokkering, men kanskje en ekstra sikkerhet?
 cookiejar = requests.cookies.RequestsCookieJar()
 cookiejar.set('kms_ctamuls', cookie)
 session.cookies = cookiejar
