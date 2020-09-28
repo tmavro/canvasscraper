@@ -1,7 +1,7 @@
 # kalturascraper.py
 
 Programmet genererer en liste med URL-er til alle videoene i et bestemt fag. Disse URL-ene kan kjøres i VLC, MPV, eller lignende program, som bl.a gir bedre kontroll over avspillingshastighet. 
-Dersom du kjører programmet i Linux og har youtube-dl installert, så vil du også kunne laste ned individuelle eller samtlige videoer direkte. 
+Dersom du kjører programmet i Linux (eller macOS) og har youtube-dl installert, så vil du også kunne laste ned individuelle eller samtlige videoer direkte. 
 
 ## Konfigurasjon
 Programmet konfigureres med session cookie og ID til faget/emnet. 
