@@ -1,15 +1,24 @@
 # kalturascraper.py
 
-Programmet genererer en liste med URL-er til alle videoene i et bestemt fag. Disse URL-ene kan kjøres i VLC, MPV, eller lignende program, som bl.a gir bedre kontroll over avspillingshastighet. 
-Dersom du kjører programmet i Linux (eller macOS) og har youtube-dl installert, så vil du også kunne laste ned individuelle eller samtlige videoer direkte. 
+*Få enkel adgang til dine emners videofiler i canvas*
+
+**kalturascraper.py** genererer en liste med URL-er til alle videoer i et valgt emne. Disse URL-ene kan kjøres i VLC, MPV, eller lignende program. Dette gir bl.a bedre kontroll over avspillingshastighet. Dersom du kjører programmet i Linux (eller macOS) og har youtube-dl installert vil du også kunne laste ned filene direkte. 
 
 ## Konfigurasjon
-Programmet konfigureres med session cookie og ID til faget/emnet. 
+Du kan konfigurere programmet direkte i koden, eller gi det som argumet via kommandolinjen. Programmer trenger session cookie og emnets ID. For nedlasting kan man også definere lokasjon.
 
-For å finne ID:
+    usage: kalturascraper.py [-h] [-c COOKIE] [-d DIR] [-g GALLERY]
+  
+    optional arguments:
+    -h, --help                       show this help message and exit
+    -c COOKIE, --cookie COOKIE       set cookie value
+    -d DIR, --dir DIR                choose dir to store files
+    -g GALLERY, --gallery GALLERY    choose gallery to scrape  
+
+For å finne galleri-ID:
 - Velg "Emne" fra menyen i Canvas
 - Velg det aktuelle emnet
-- ID-en er tallene i adresselinjen, etter "https://hvl.instructure.com/courses/" 
+- ID-et er tallene i adresselinjen, etter "https://hvl.instructure.com/courses/" 
 
 For å finne cookie: 
 - Trykk på "Emnets mediefiler"
@@ -18,4 +27,4 @@ For å finne cookie:
 <img src="cookies.jpg" width="600"></img>
 - I andre nettlesere: Google it :-P 
 
-Skriv verdiene inn i kalturascraper.py i de korresponderende variablene, "cookie" og "galleryID". 
+Skriv verdiene inn i kalturascraper.py i de korresponderende variablene, "cookie" og "galleryID". Dersom du ikke definerer "dir" lastes filene ned i samme mappe som kalturascraper.py kjører i. 
