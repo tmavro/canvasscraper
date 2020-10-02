@@ -2,7 +2,7 @@
 
 *Få enkel adgang til dine emners videofiler i canvas*
 
-**kalturascraper.py** genererer en liste med URL-er til alle videoer i et valgt emne. Disse URL-ene kan kjøres i VLC, MPV, eller lignende program. Dette gir bl.a bedre kontroll over avspillingshastighet. Dersom du kjører programmet i Linux (eller macOS) og har youtube-dl installert vil du også kunne laste ned filene direkte. 
+**kalturascraper.py** genererer en liste med URL-er til alle videoer i et valgt emne. Disse URL-ene kan kjøres i VLC, MPV, eller lignende videoavspillingsprogram. Dette gir bl.a bedre kontroll over avspillingshastighet. Dersom du kjører programmet i Linux (eller macOS) og har youtube-dl installert vil du også kunne laste ned filene direkte. 
 
 ## Konfigurasjon
 Du kan konfigurere programmet direkte i koden, eller gi det som argumet via kommandolinjen. Programmet trenger din session cookie og emnets ID. For nedlasting kan man også definere lokasjon.
