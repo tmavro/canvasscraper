@@ -7,9 +7,9 @@ from shutil import which
 import subprocess
 
 # Oppgi session cookie, "kms_ctamuls":
-cookie = '8otknb9cmrdml5qqegkmt78si6'
+cookie = 'caxaPh5ziet2ahYoolaeJ9oZee'
 # Oppgi URL til emnets ID
-galleryID = '15254'
+galleryID = '12345'
 # Oppgi hvor du vil lagre filene. Havner i samme mappe som scriptet hvis tomt, eller argument ikke gis.
 dir = ''
 
