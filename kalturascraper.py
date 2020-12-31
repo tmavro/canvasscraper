@@ -6,7 +6,7 @@ import platform
 from shutil import which
 import subprocess
 
-#Du kan gi programmet argument, eller konfigurere herunder: 
+#Du kan gi programmet argument, eller konfigurere herunder:
 # Oppgi session cookie, "kms_ctamuls":
 cookie = ''
 # Oppgi URL til emnets ID
@@ -66,7 +66,7 @@ if access.text.strip() == "Access Denied":
     exit()
 
 #Henter informasjon om samtlige forelesninger
-names = [ name.text for name in parsed.find_all('p', {'class': 'thumb_name_content'}) ] #Forelesningers titler
+names = [ name.get('title', 'Ingen tittel funnet') for name in parsed.find_all('div', { 'class': 'photo-group thumb_wrapper' }) ]
 urls = [ url.get('href') for url in parsed.find_all('a', { 'class': 'item_link'}) ] #Forelesningers url-er
 urls = list(dict.fromkeys(urls)) #Fjerner duplikat fra listen
 urls = [ re.findall('0_[\d\w]+', id)[0] for id in urls ] #Skiller ut url-enes id-er
