@@ -6,96 +6,114 @@ import platform
 from shutil import which
 import subprocess
 
-#Du kan gi programmet argument, eller konfigurere herunder:
-# Oppgi session cookie, "kms_ctamuls":
-cookie = ''
-# Oppgi URL til emnets ID
-galleryID = ''
-# Oppgi hvor du vil lagre filene. Havner i samme mappe som scriptet hvis tomt, eller argument ikke gis.
-dir = ''
+class galleri:
+    def __init__(self, gallery, directory):
+        self.gal = gallery
+        self.dir = directory
+        if self.dir[-1] != '/':
+            self.dir += '/'
+        self.names = []
+        self.urls = []
 
-#Arguments (krangler)
-argpars = ArgumentParser()
-argpars.add_argument('-c', '--cookie', help='set cookie value')
-argpars.add_argument('-d', '--dir', help='choose dir to store files')
-argpars.add_argument('-g', '--gallery', help='choose gallery to scrape')
-args = argpars.parse_args()
+    def nyttNavn(self, n):
+        self.names.append(n)
 
-#Sjekker at kranglingen ikke ender med tårer
-if args.dir != None:
-    if re.match(r'^(\\?/?[A-Za-z0-9. \"]+\\?/?)+$', str(args.dir)):
-        dir = args.dir
-        if dir[-1] != '/':
-            dir += '/'
-    else:
-        print('Mappestrukturen matcher ikke programmets kriterier.')
-        exit()
-if args.cookie != None:
-    if re.match(r'^[a-z\d]{26}$', str(args.cookie)):
-        cookie = args.cookie
-    else:
-        print('Kakestrengen matcher ikke programmets kriterier (Kombinasjon av små bokstaver og tall, 26 tegn totalt)')
-        exit()
-if args.gallery != None:
-    if re.match(r'^[0-9]+$', str(args.gallery)):
-        galleryID = args.gallery
-    else:
-        print('Galleriets ID skal kun inneholde tall.')
-        exit()
+    def nyUrl(self, u):
+        self.urls.append(u)
 
-if (dir or galleryID) == '':
-    argpars.print_help()
+#Arguments
+parser = ArgumentParser()
+parser.add_argument('-c', '--cookie', required='true', help='set cookie value')
+parser.add_argument('-g', '--gallery', required='true', action='append', help='set gallery or galleries to scrape')
+parser.add_argument('-d', '--directory', required='true', action='append', help='set directory or directories to store files')
+args = parser.parse_args()
+
+#Sjekker at argumentene ikke ender med tårer
+if not re.match(r'^[a-z\d]{26}$', str(args.cookie)):
+    print('Kakestrengen matcher ikke programmets kriterier (Kombinasjon av små bokstaver og tall, 26 tegn totalt)')
     exit()
+
+for dir in args.directory:
+    if not re.match(r'^(\\?/?[A-Za-z0-9. \"]+\\?/?)+$', str(dir)):
+        print(dir + ' Mappestrukturen matcher ikke programmets kriterier.')
+        exit()
+
+for gal in args.gallery:
+    if not re.match(r'^[0-9]+$', str(gal)):
+        print(gal + ' Galleriers ID skal kun inneholde tall.')
+        exit()
+
+if len(args.gallery) != len(args.directory):
+    print('Det må være like mange galleri og mapper.')
+    exit()
+
+#Oppretter galleriobjekter med galleri-ID og mapper
+gallerier = []
+for idx, gal in enumerate(args.gallery):
+    gallerier.append(galleri(gal, args.directory[idx]))
 
 #Setter opp for innlogging
 session = requests.Session()
-session.headers.update({'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:80.0) Gecko/20100101 Firefox/80.0'}) #Ingen blokkering, men kanskje en ekstra sikkerhet?
+session.headers.update({'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:84.0) Gecko/20100101 Firefox/84.0'}) #Ingen blokkering, men kanskje en ekstra sikkerhet?
 cookiejar = requests.cookies.RequestsCookieJar()
-cookiejar.set('kms_ctamuls', cookie)
+cookiejar.set('kms_ctamuls', args.cookie)
 session.cookies = cookiejar
 
-#Henter fra galleri
-retrieved = session.get('https://354-1.kaltura.nordu.net/channel/' + galleryID)
-parsed = BeautifulSoup(retrieved.text, 'html.parser')
-
 #Sjekker at vi får tilgang, eller avbryter
-access = parsed.find('div', { 'id': 'content' })
-if access.text.strip() == "Access Denied":
-    print("Noe gikk galt ved innlogging! Problem med kjekset?",
-    "\nTo server:", retrieved.request.headers)
+retrieved = session.get('https://354-1.kaltura.nordu.net/channel/' + args.gallery[0])
+parsed = BeautifulSoup(retrieved.text, 'html.parser')
+if parsed.find('div', { 'id': 'content' }).text.strip() == "Access Denied":
+    print("Noe gikk galt ved innlogging! Problem med kjekset eller galleriet?",
+    "\nSendt til server:", retrieved.request.headers)
     exit()
 
 #Henter informasjon om samtlige forelesninger
-names = [ name.get('title', 'Ingen tittel funnet') for name in parsed.find_all('div', { 'class': 'photo-group thumb_wrapper' }) ]
-urls = [ url.get('href') for url in parsed.find_all('a', { 'class': 'item_link'}) ] #Forelesningers url-er
-urls = list(dict.fromkeys(urls)) #Fjerner duplikat fra listen
-urls = [ re.findall('0_[\d\w]+', id)[0] for id in urls ] #Skiller ut url-enes id-er
-m3u8 = [ 'https://dchsou11xk84p.cloudfront.net/p/354/playManifest/entryId/'
-            + url + '/format/applehttp/a.m3u8' for url in urls] #Ressurslokasjoner
+for galleri in gallerier:
+    retrieved = session.get('https://354-1.kaltura.nordu.net/channel/' + galleri.gal)
+    parsed = BeautifulSoup(retrieved.text, 'html.parser')
+    if parsed.find('div', { 'id': 'content' }).text.strip() == "Access Denied":
+        print("Noe gikk galt med galleri" + galleri.gal + "! Ingen adgang!")
+        continue
+    names = [ name.get('title', 'Ingen tittel funnet') for name in parsed.find_all('div', { 'class': 'photo-group thumb_wrapper' }) ]
+    for name in names:
+        galleri.nyttNavn(name)
+    urls = [ url.get('href') for url in parsed.find_all('a', { 'class': 'item_link'}) ] #Forelesningers url-er
+    urls = list(dict.fromkeys(urls)) #Fjerner duplikat fra listen
+    urls = [ re.findall('0_[\d\w]+', id)[0] for id in urls ] #Skiller ut url-enes id-er
+    m3u8 = [ 'https://dchsou11xk84p.cloudfront.net/p/354/playManifest/entryId/' + url + '/format/applehttp/a.m3u8' for url in urls] #Ressurslokasjoner
+    for url in m3u8:
+        galleri.nyUrl(url)
 
-#Utsktrift av videoer (forhåpentligvis)
-if not names or not m3u8:
-    print('Noe gikk galt! Ingen videoer funnet. Feil URL til galleri?')
-    exit()
-else:
-    print('Funnet videoer!')
-    for i in range(len(names)):
-        print('[' + str(i) + ']: ' + names[i] + '\n' + m3u8[i] + '\n')
+    if not names or not m3u8:
+        print('Noe gikk galt! Ingen videoer funnet. Feil URL til galleri?')
+        for i, data in galleri.names:
+            print('[' + str(i) + ']: ' + galleri[i].names + '\n' + galleri[i].urls + '\n')
+
 
 #Nedlasting
-spm = ''
-while (not spm.isdigit()):
-    if (platform.system() == 'Linux' or platform.system() == 'Darwin') and which('youtube-dl') != None:
-        spm = input('Vil du laste ned hele listen, eller en bestemt video? y/[0 - ' + str(len(m3u8)-1) + ']/N \n')
-        if spm == 'y' or spm == 'Y': #youtube-dl skriver ikke over filer den allerede har lastet ned
-            for i in range(len(m3u8)):
-                subprocess.run(["youtube-dl", m3u8[i], "-o", dir + names[i] + ".mp4"])
-            exit()
-        elif spm.isdigit() and int(spm) < len(m3u8)-1 and int(spm) > -1:
-            subprocess.run(["youtube-dl", m3u8[int(spm)], "-o", dir + names[int(spm)] + '.mp4'])
-            print('Lastet ned til ' + dir + names[int(spm)] + '.mp4' + '\n')
-            for i in range(len(names)):
-                print('[' + str(i) + ']: ' + names[i] + '\n' + m3u8[i] + '\n')
+if (platform.system() == 'Linux' or platform.system() == 'Darwin') and which('youtube-dl') != None:
+    spm = input('Vil du laste ned alle videoer? y/N \n')
+    if spm == 'y' or spm == 'Y':
+        for galleri in gallerier:
+            for i in range(len(galleri.urls)):
+                subprocess.run(["youtube-dl", galleri.urls[i], "-o", galleri.dir + galleri.names[i] + ".mp4"])
+    else: #Vis objektene en etter en først
+        for galleri in gallerier:
+            for i, data in enumerate(galleri.names):
+                print('[' + str(i) + ']: ' + galleri.names[i] + '\n' + galleri.urls[i] + '\n')
             spm = ''
-        else:
-            exit()
+            while (not spm.isdigit()):
+                if (platform.system() == 'Linux' or platform.system() == 'Darwin') and which('youtube-dl') != None:
+                    spm = input('Vil du laste ned hele listen, eller en bestemt video? y/[0 - ' + str(len(m3u8)-1) + ']/N \n')
+                    if spm == 'y' or spm == 'Y': #youtube-dl skriver ikke over filer den allerede har lastet ned
+                        for i in range(len(galleri.names)):
+                            subprocess.run(["youtube-dl", galleri.urls[i], "-o", galleri.dir + galleri.names[i] + ".mp4"])
+                        continue
+                    elif spm.isdigit() and int(spm) < len(m3u8)-1 and int(spm) > -1:
+                        subprocess.run(["youtube-dl", galleri.urls[i], "-o", galleri.dir + galleri.names[i] + ".mp4"])
+                        print('Lastet ned til ' + galleri.dir + galleri.names[int(spm)] + '.mp4' + '\n')
+                        for i in range(len(names)):
+                            print('[' + str(i) + ']: ' + names[i] + '\n' + m3u8[i] + '\n')
+                        spm = ''
+                    else:
+                        break
