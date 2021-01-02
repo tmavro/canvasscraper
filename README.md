@@ -2,7 +2,7 @@
 
 *Få enkel adgang til dine emners videofiler i canvas*
 
-**kalturascraper.py** genererer en liste med URL-er til alle videoer i et valgt emne. Disse URL-ene kan kjøres i VLC, MPV, eller lignende videoavspillingsprogram. Dette gir bl.a bedre kontroll over avspillingshastighet. Dersom du kjører programmet i Linux (eller macOS) og har youtube-dl installert vil du også kunne laste ned filene direkte. 
+**kalturascraper.py** genererer en liste med URL-er til alle videoer i valgte emne. Disse URL-ene kan lastes ned dersom du har youtube-dl installert. Kun GNU/Linux og macOS er støttet. 
 
 ## Installasjon og kjøring
 Du trenger først python3 installert. Deretter: 
@@ -17,15 +17,15 @@ Du trenger først python3 installert. Deretter:
         $ python3 kalturascraper.py -h
 
 ## Konfigurasjon
-Du kan konfigurere programmet direkte i koden, eller gi argumet via kommandolinjen. Programmet trenger din session cookie og emnets ID. For nedlasting kan man også definere lokasjon.
+Du gir argumet(er) via kommandolinjen. Programmet trenger din session cookie, minst ett emnes ID og tilhørende lokasjon for nedlasting.
 
-    usage: kalturascraper.py [-h] [-c COOKIE] [-d DIR] [-g GALLERY]
-  
-    optional arguments:
-    -h, --help                       show this help message and exit
-    -c COOKIE, --cookie COOKIE       set cookie value
-    -d DIR, --dir DIR                choose dir to store files
-    -g GALLERY, --gallery GALLERY    choose gallery to scrape  
+    usage: kalturascraper.py [-h] -c COOKIE -g GALLERY -d DIRECTORY    
+    
+    optional arguments:                                          
+      -h, --help                            show this help message and exit        
+      -c COOKIE, --cookie COOKIE            set cookie value   
+      -g GALLERY, --gallery GALLERY         set gallery or galleries to scrape       
+      -d DIRECTORY, --directory DIRECTORY   set directory or directories to store files   
 
 For å finne galleri-ID:
 - Velg "Emne" fra menyen i Canvas
