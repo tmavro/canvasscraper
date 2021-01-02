@@ -98,16 +98,16 @@ if which('youtube-dl') != None:
     #Eller vis objektene en etter en først
     else:
         for galleri in gallerier:
-            for i, data in enumerate(galleri.names):
-                print('[' + str(i) + ']: ' + galleri.names[i] + '\n' + galleri.urls[i] + '\n')
             spm = ''
             while (not spm.isdigit()):
                 if which('youtube-dl') != None:
+                    for i, data in enumerate(galleri.names):
+                        print('[' + str(i) + ']: ' + galleri.names[i] + '\n' + galleri.urls[i] + '\n')
                     spm = input('Vil du laste ned hele listen, eller en bestemt video? y/[0 - ' + str(len(galleri.urls)-1) + ']/N \n')
                     if spm == 'y' or spm == 'Y': #youtube-dl skriver ikke over filer den allerede har lastet ned
                         for i in range(len(galleri.names)):
                             subprocess.run(["youtube-dl", galleri.urls[i], "-o", galleri.dir + galleri.names[i] + ".mp4"])
-                        continue
+                        break
                     elif spm.isdigit() and int(spm) < len(m3u8)-1 and int(spm) > -1:
                         subprocess.run(["youtube-dl", galleri.urls[i], "-o", galleri.dir + galleri.names[i] + ".mp4"])
                         print('Lastet ned til ' + galleri.dir + galleri.names[int(spm)] + '.mp4' + '\n')
