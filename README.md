@@ -2,7 +2,7 @@
 
 *Få enkel adgang til dine emners videofiler i canvas*
 
-**kalturascraper.py** genererer en liste med URL-er til alle videoer i valgte emne. Disse URL-ene kan lastes ned dersom du har youtube-dl installert. Kun GNU/Linux og macOS er støttet. 
+**kalturascraper.py** genererer en liste med URL-er til alle videoer i valgte emne. Disse URL-ene kan lastes ned dersom du har youtube-dl installert.
 
 ## Installasjon og kjøring
 Du trenger først python3 installert. Deretter: 
