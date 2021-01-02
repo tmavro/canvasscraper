@@ -2,7 +2,6 @@ from argparse import ArgumentParser
 import re
 import requests
 from bs4 import BeautifulSoup
-import platform
 from shutil import which
 import subprocess
 
@@ -88,8 +87,7 @@ for galleri in gallerier:
         print('Noe gikk galt! Ingen videoer funnet. Feil URL til galleri?')
         for i, data in galleri.names:
             print('[' + str(i) + ']: ' + galleri[i].names + '\n' + galleri[i].urls + '\n')
-
-
+            
 #Nedlasting
 if which('youtube-dl') != None:
     spm = input('Vil du laste ned alle videoer? y/N \n')
