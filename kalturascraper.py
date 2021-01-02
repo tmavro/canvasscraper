@@ -91,20 +91,21 @@ for galleri in gallerier:
 
 
 #Nedlasting
-if (platform.system() == 'Linux' or platform.system() == 'Darwin') and which('youtube-dl') != None:
+if which('youtube-dl') != None:
     spm = input('Vil du laste ned alle videoer? y/N \n')
     if spm == 'y' or spm == 'Y':
         for galleri in gallerier:
             for i in range(len(galleri.urls)):
                 subprocess.run(["youtube-dl", galleri.urls[i], "-o", galleri.dir + galleri.names[i] + ".mp4"])
-    else: #Vis objektene en etter en først
+    #Eller vis objektene en etter en først
+    else:
         for galleri in gallerier:
             for i, data in enumerate(galleri.names):
                 print('[' + str(i) + ']: ' + galleri.names[i] + '\n' + galleri.urls[i] + '\n')
             spm = ''
             while (not spm.isdigit()):
-                if (platform.system() == 'Linux' or platform.system() == 'Darwin') and which('youtube-dl') != None:
-                    spm = input('Vil du laste ned hele listen, eller en bestemt video? y/[0 - ' + str(len(m3u8)-1) + ']/N \n')
+                if which('youtube-dl') != None:
+                    spm = input('Vil du laste ned hele listen, eller en bestemt video? y/[0 - ' + str(len(galleri.urls)-1) + ']/N \n')
                     if spm == 'y' or spm == 'Y': #youtube-dl skriver ikke over filer den allerede har lastet ned
                         for i in range(len(galleri.names)):
                             subprocess.run(["youtube-dl", galleri.urls[i], "-o", galleri.dir + galleri.names[i] + ".mp4"])
@@ -112,8 +113,8 @@ if (platform.system() == 'Linux' or platform.system() == 'Darwin') and which('yo
                     elif spm.isdigit() and int(spm) < len(m3u8)-1 and int(spm) > -1:
                         subprocess.run(["youtube-dl", galleri.urls[i], "-o", galleri.dir + galleri.names[i] + ".mp4"])
                         print('Lastet ned til ' + galleri.dir + galleri.names[int(spm)] + '.mp4' + '\n')
-                        for i in range(len(names)):
-                            print('[' + str(i) + ']: ' + names[i] + '\n' + m3u8[i] + '\n')
+                        for i in range(len(galleri.names)):
+                            print('[' + str(i) + ']: ' + galleri.names[i] + '\n' + galleri.urls[i] + '\n')
                         spm = ''
                     else:
                         break
