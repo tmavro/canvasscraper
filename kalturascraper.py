@@ -13,12 +13,14 @@ class galleri:
             self.dir += '/'
         self.names = []
         self.urls = []
+        self.tomt = True #Sjekk for om det er noe i galleriet
 
     def nyttNavn(self, n):
         self.names.append(n)
 
     def nyUrl(self, u):
         self.urls.append(u)
+        self.tomt = False #Ny url betyr at vi har funnet noe
 
 #Arguments
 parser = ArgumentParser()
@@ -48,8 +50,8 @@ if len(args.gallery) != len(args.directory):
 
 #Oppretter galleriobjekter med galleri-ID og mapper
 gallerier = []
-for idx, gal in enumerate(args.gallery):
-    gallerier.append(galleri(gal, args.directory[idx]))
+for i, gal in enumerate(args.gallery):
+    gallerier.append(galleri(gal, args.directory[i]))
 
 #Setter opp for innlogging
 session = requests.Session()
@@ -83,11 +85,18 @@ for galleri in gallerier:
     for url in m3u8:
         galleri.nyUrl(url)
 
-    if not names or not m3u8:
-        print('Noe gikk galt! Ingen videoer funnet. Feil URL til galleri?')
-        for i, data in galleri.names:
-            print('[' + str(i) + ']: ' + galleri[i].names + '\n' + galleri[i].urls + '\n')
-            
+    if galleri.tomt:
+        print('Ingen videoer funnet i galleri ' + galleri.gal)
+    else:
+        print('\nVideor i galleri ' + galleri.gal + ':')
+        for i, data in enumerate(galleri.names):
+            print('[' + str(i) + ']: ' + galleri.names[i] + '\n' + galleri.urls[i] + '\n')
+
+#Sjekker om vi fant noen urler til videoer
+if all(galleri.tomt for galleri in gallerier):
+    print("Ingen videoer funnet med gitt input. Avslutter.")
+    exit()
+
 #Nedlasting
 if which('youtube-dl') != None:
     spm = input('Vil du laste ned alle videoer? y/N \n')
