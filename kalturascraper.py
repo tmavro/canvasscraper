@@ -4,6 +4,7 @@ import requests
 from bs4 import BeautifulSoup
 from shutil import which
 import subprocess
+import os.path
 
 class galleri:
     def __init__(self, gallery, directory):
@@ -21,6 +22,15 @@ class galleri:
     def nyUrl(self, u):
         self.urls.append(u)
         self.tomt = False #Ny url betyr at vi har funnet noe
+
+#Laster ned dersom fil ikke allerede eksisterer
+def ytdl(url, dir, name):
+    PATH = dir + name + ".mp4"
+    if not os.path.isfile(PATH):
+        print("Laster ned: " + PATH)
+        subprocess.run(["youtube-dl", "-q", url, "-o", PATH])
+    else:
+         print("Eksisterer allerede: " + PATH)
 
 #Arguments
 parser = ArgumentParser()
@@ -88,9 +98,7 @@ for galleri in gallerier:
     if galleri.tomt:
         print('Ingen videoer funnet i galleri ' + galleri.gal)
     else:
-        print('\nVideor i galleri ' + galleri.gal + ':')
-        for i, data in enumerate(galleri.names):
-            print('[' + str(i) + ']: ' + galleri.names[i] + '\n' + galleri.urls[i] + '\n')
+        print('Videoer funnet i galleri ' + galleri.gal)
 
 #Sjekker om vi fant noen urler til videoer
 if all(galleri.tomt for galleri in gallerier):
@@ -99,11 +107,11 @@ if all(galleri.tomt for galleri in gallerier):
 
 #Nedlasting
 if which('youtube-dl') != None:
-    spm = input('Vil du laste ned alle videoer? y/N \n')
+    spm = input('\nVil du laste ned alle videoer? y/N \n')
     if spm == 'y' or spm == 'Y':
         for galleri in gallerier:
             for i in range(len(galleri.urls)):
-                subprocess.run(["youtube-dl", galleri.urls[i], "-o", galleri.dir + galleri.names[i] + ".mp4"])
+                ytdl(galleri.urls[i], galleri.dir, galleri.names[i])
     #Eller vis objektene en etter en først
     else:
         for galleri in gallerier:
@@ -112,13 +120,13 @@ if which('youtube-dl') != None:
                 if which('youtube-dl') != None:
                     for i, data in enumerate(galleri.names):
                         print('[' + str(i) + ']: ' + galleri.names[i] + '\n' + galleri.urls[i] + '\n')
-                    spm = input('Vil du laste ned hele listen, eller en bestemt video? y/[0 - ' + str(len(galleri.urls)-1) + ']/N \n')
+                    spm = input('Vil du laste ned hele galleri ' + galleri.gal + ', eller en bestemt video? y/[0 - ' + str(len(galleri.urls)-1) + ']/N \n')
                     if spm == 'y' or spm == 'Y': #youtube-dl skriver ikke over filer den allerede har lastet ned
                         for i in range(len(galleri.names)):
-                            subprocess.run(["youtube-dl", galleri.urls[i], "-o", galleri.dir + galleri.names[i] + ".mp4"])
+                            ytdl(galleri.urls[i], galleri.dir, galleri.names[i])
                         break
                     elif spm.isdigit() and int(spm) < len(m3u8)-1 and int(spm) > -1:
-                        subprocess.run(["youtube-dl", galleri.urls[i], "-o", galleri.dir + galleri.names[i] + ".mp4"])
+                        ytdl(galleri.urls[i], galleri.dir, galleri.names[i])
                         print('Lastet ned til ' + galleri.dir + galleri.names[int(spm)] + '.mp4' + '\n')
                         for i in range(len(galleri.names)):
                             print('[' + str(i) + ']: ' + galleri.names[i] + '\n' + galleri.urls[i] + '\n')
