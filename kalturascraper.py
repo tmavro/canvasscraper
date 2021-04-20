@@ -80,7 +80,7 @@ if parsed.find('div', { 'id': 'content' }).text.strip() == "Access Denied":
 
 #Henter informasjon om samtlige forelesninger
 for galleri in gallerier:
-    retrieved = session.get('https://354-1.kaltura.nordu.net/channel/' + galleri.gal)
+    retrieved = session.get('https://354-1.kaltura.nordu.net/channel/' + galleri.gal + '//sort/recent/pageSize/1000')
     parsed = BeautifulSoup(retrieved.text, 'html.parser')
     if parsed.find('div', { 'id': 'content' }).text.strip() == "Access Denied":
         print("Noe gikk galt med galleri" + galleri.gal + "! Ingen adgang!")
