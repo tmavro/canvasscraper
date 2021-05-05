@@ -37,6 +37,7 @@ parser = ArgumentParser()
 parser.add_argument('-c', '--cookie', required='true', help='set cookie value')
 parser.add_argument('-g', '--gallery', required='true', action='append', help='set gallery or galleries to scrape')
 parser.add_argument('-d', '--directory', required='true', action='append', help='set directory or directories to store files')
+parser.add_argument('-f', '--force', action='store_true', help='automatically start any available downloads')
 args = parser.parse_args()
 
 #Sjekker at argumentene ikke ender med tårer
@@ -107,29 +108,34 @@ if all(galleri.tomt for galleri in gallerier):
 
 #Nedlasting
 if which('youtube-dl') != None:
-    spm = input('\nVil du laste ned alle videoer? y/N \n')
-    if spm == 'y' or spm == 'Y':
+    if args.force: 
         for galleri in gallerier:
             for i in range(len(galleri.urls)):
                 ytdl(galleri.urls[i], galleri.dir, galleri.names[i])
-    #Eller vis objektene en etter en først
-    else:
-        for galleri in gallerier:
-            spm = ''
-            while (not spm.isdigit()):
-                if which('youtube-dl') != None:
-                    for i, data in enumerate(galleri.names):
-                        print('[' + str(i) + ']: ' + galleri.names[i] + '\n' + galleri.urls[i] + '\n')
-                    spm = input('Vil du laste ned hele galleri ' + galleri.gal + ', eller en bestemt video? y/[0 - ' + str(len(galleri.urls)-1) + ']/N \n')
-                    if spm == 'y' or spm == 'Y': #youtube-dl skriver ikke over filer den allerede har lastet ned
-                        for i in range(len(galleri.names)):
-                            ytdl(galleri.urls[i], galleri.dir, galleri.names[i])
-                        break
-                    elif spm.isdigit() and int(spm) < len(m3u8)-1 and int(spm) > -1:
-                        ytdl(galleri.urls[i], galleri.dir, galleri.names[i])
-                        print('Lastet ned til ' + galleri.dir + galleri.names[int(spm)] + '.mp4' + '\n')
-                        for i in range(len(galleri.names)):
+    else: 
+        spm = input('\nVil du laste ned alle videoer? y/N \n')
+        if spm == 'y' or spm == 'Y':
+            for galleri in gallerier:
+                for i in range(len(galleri.urls)):
+                    ytdl(galleri.urls[i], galleri.dir, galleri.names[i])
+        #Eller vis objektene en etter en først
+        else:
+            for galleri in gallerier:
+                spm = ''
+                while (not spm.isdigit()):
+                    if which('youtube-dl') != None:
+                        for i, data in enumerate(galleri.names):
                             print('[' + str(i) + ']: ' + galleri.names[i] + '\n' + galleri.urls[i] + '\n')
-                        spm = ''
-                    else:
-                        break
+                        spm = input('Vil du laste ned hele galleri ' + galleri.gal + ', eller en bestemt video? y/[0 - ' + str(len(galleri.urls)-1) + ']/N \n')
+                        if spm == 'y' or spm == 'Y': #youtube-dl skriver ikke over filer den allerede har lastet ned
+                            for i in range(len(galleri.names)):
+                                ytdl(galleri.urls[i], galleri.dir, galleri.names[i])
+                            break
+                        elif spm.isdigit() and int(spm) < len(m3u8)-1 and int(spm) > -1:
+                            ytdl(galleri.urls[i], galleri.dir, galleri.names[i])
+                            print('Lastet ned til ' + galleri.dir + galleri.names[int(spm)] + '.mp4' + '\n')
+                            for i in range(len(galleri.names)):
+                                print('[' + str(i) + ']: ' + galleri.names[i] + '\n' + galleri.urls[i] + '\n')
+                            spm = ''
+                        else:
+                            break
