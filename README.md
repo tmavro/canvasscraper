@@ -26,7 +26,7 @@ Du gir argumet(er) via kommandolinjen. Programmet trenger din session cookie, mi
       -c COOKIE, --cookie COOKIE            set cookie value   
       -g GALLERY, --gallery GALLERY         set gallery or galleries to scrape       
       -d DIRECTORY, --directory DIRECTORY   set directory or directories to store files
-      -f, --force           automatically start any available downloads
+      -f, --force                           automatically start any available downloads
 
 For å finne galleri-ID:
 - Velg "Emne" fra menyen i Canvas
