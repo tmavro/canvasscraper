@@ -55,14 +55,17 @@ for gal in args.gallery:
         print(gal + ' Galleriers ID skal kun inneholde tall.')
         exit()
 
-if len(args.gallery) != len(args.directory):
-    print('Det må være like mange galleri og mapper.')
+if len(args.gallery) < len(args.directory):
+    print('Det kan ikke være flere mapper enn galleri.')
     exit()
 
 #Oppretter galleriobjekter med galleri-ID og mapper
 gallerier = []
 for i, gal in enumerate(args.gallery):
-    gallerier.append(galleri(gal, args.directory[i]))
+    if len(args.directory) > 1:
+        gallerier.append(galleri(gal, args.directory[i]))
+    else:
+        gallerier.append(galleri(gal, args.directory[0]))
 
 #Setter opp for innlogging
 session = requests.Session()
